@@ -833,7 +833,7 @@ ruleThisCycle :: Rule
 ruleThisCycle = Rule
   { name = "this <cycle>"
   , pattern =
-    [ regex "(这|這)(一)?|今個"
+    [ regex "(这|這)(一|個|个)?"
     , dimension TimeGrain
     ]
   , prod = \tokens -> case tokens of
@@ -1273,6 +1273,98 @@ ruleComputedHolidays' = mkRuleHolidays'
           interval TTime.Closed start $ cycleNthAfter False TG.Minute 60 start )
   ]
 
+
+-- 新的规则
+ruleIntervalTo :: Rule
+ruleIntervalTo = Rule
+  { name = "from <datetime> - <datetime> (interval)"
+  , pattern =
+    [ dimension Time
+    , regex "點|点|時"
+    , regex "到|至"
+    , dimension Time
+    , regex "點|点|時"
+    ]
+  , prod = \tokens -> case tokens of
+      (Token Time td1:_:_:Token Time td2:_:_) ->
+        Token Time <$> interval TTime.Closed td1 td2
+      _ -> Nothing
+  }
+
+ruleIntervalFromDDDDMonth :: Rule
+ruleIntervalFromDDDDMonth = Rule
+  { name = "from the <day-of-month> (ordinal or number) to the <day-of-month> (ordinal or number) <named-month> (interval)"
+  , pattern =
+    [ Predicate isAMonth
+    , Predicate isDOMValue
+    , regex "号|日"
+    , regex "到|至"
+    , Predicate isDOMValue
+    , regex "号|日"
+    ]
+  , prod = \tokens -> case tokens of
+      (Token Time td:
+       token1:
+       _:
+       _:
+       token2:
+       _:
+       _) -> do
+        dom1 <- intersectDOM td token1
+        dom2 <- intersectDOM td token2
+        Token Time <$> interval TTime.Closed dom1 dom2
+      _ -> Nothing
+  }
+
+ruleIntervalBetween :: Rule
+ruleIntervalBetween = Rule
+  { name = "between <time> and <time>"
+  , pattern =
+    [ dimension Time
+    , regex "到|至"
+    , dimension Time
+    ]
+  , prod = \tokens -> case tokens of
+      (Token Time td1:_:Token Time td2:_) ->
+        Token Time <$> interval TTime.Closed td1 td2
+      _ -> Nothing
+  }
+  
+ruleIntervalTODBetween :: Rule
+ruleIntervalTODBetween = Rule
+  { name = "between <time-of-day> and <time-of-day> (interval)"
+  , pattern =
+    [ Predicate isATimeOfDay
+    , regex "到|至"
+    , Predicate isATimeOfDay
+    ]
+  , prod = \tokens -> case tokens of
+      (Token Time td1:_:Token Time td2:_) ->
+        Token Time <$> interval TTime.Closed td1 td2
+      _ -> Nothing
+  }
+
+ruleThisMonth :: Rule
+ruleThisMonth = Rule
+  { name = "this <month>"
+  , pattern =
+    [ regex "这|這|今(个|個)?"
+    , Predicate isAMonth
+    ]
+  , prod = \tokens -> case tokens of
+      (_:Token Time td:_) -> tt $ predNth 0 False td
+      _ -> Nothing
+  }
+
+ruleCurrentMonth :: Rule
+ruleCurrentMonth = Rule
+  { name = "current month"
+  , pattern =
+    [ regex "这个月|这月"
+    ]
+  , prod = \_ -> tt $ cycleNth TG.Month 1
+  }
+
 rules :: [Rule]
 rules =
   [ ruleAbsorptionOfAfterNamedDay
@@ -1351,6 +1443,12 @@ rules =
   , ruleRelativeMinutesAfterpastIntegerHourofday7
   , ruleLastDuration
   , ruleDayOfMonth
+  , ruleIntervalTo
+  , ruleIntervalFromDDDDMonth
+  , ruleIntervalBetween
+  , ruleIntervalTODBetween
+  , ruleThisMonth
+  , ruleCurrentMonth
   ]
   ++ ruleDaysOfWeek
   ++ ruleMonths

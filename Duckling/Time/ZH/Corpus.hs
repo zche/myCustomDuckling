@@ -280,6 +280,11 @@ allExamples = concat
              , "下礼拜"
              , "下禮拜"
              ]
+  , examples (datetime (2013, 2, 1, 0, 0, 0) Month)
+             [ "这月"
+             , "这个月"
+             , "这一月"
+             ]
   , examples (datetime (2013, 1, 1, 0, 0, 0) Month)
              [ "上月"
              , "上个月"
@@ -297,6 +302,11 @@ allExamples = concat
              [ "今個月二十號"
              , "今個月20号"
              , "今個月廿號"
+             ]
+  , examples (datetime (2013, 2, 20, 0, 0, 0) Day)
+             [ "这个月二十號"
+             , "这个月20号"
+             , "这个月廿號"
              ]
   , examples (datetime (2013, 3, 20, 0, 0, 0) Day)
              [ "下個月二十號"
@@ -886,5 +896,78 @@ allExamples = concat
   , examples (datetimeIntervalHoliday ((2016, 3, 19, 20, 30, 0), (2016, 3, 19, 21, 31, 0)) Minute "地球一小时")
              [ "2016年地球一小时"
              , "2016年地球一小時"
+             ]
+  , examples (datetimeInterval ((2013, 7, 13, 0, 0, 0), (2013, 7, 16, 0, 0, 0)) Day)
+             [ "7月13号到15号"
+             , "7月的13号到15号"
+             ]
+  , examples (datetimeInterval ((2013, 7, 13, 0, 0, 0), (2013, 7, 16, 0, 0, 0)) Day)
+             [ "7月的13号到7月的15号"
+             , "7月13号到7月15号"
+             ]
+  , examples (datetimeInterval ((2013, 8, 8, 0, 0, 0), (2013, 8, 13, 0, 0, 0)) Day)
+             [ "8月8号到8月13号"
+             ]
+  , examples (datetimeInterval ((2013, 2, 12, 9, 30, 0), (2013, 2, 12, 11, 1, 0)) Minute)
+             [ "9点半到11点"
+             , "9点30到11点"
+             ]
+  , examples (datetimeInterval ((2013, 2, 12, 9, 0, 0), (2013, 2, 12, 11, 1, 0)) Minute)
+             [ "9点到11点"
+             , "9点至11点"
+             ]
+  , examples (datetimeInterval ((2013, 2, 14, 9, 30, 0), (2013, 2, 14, 11, 1, 0)) Minute)
+             [ "周四9点半到11点"
+             , "周四9点30到11点"
+             , "周四9:30到11点"
+             ]
+  , examples (datetimeInterval ((2013, 2, 13, 8, 0, 0), (2013, 2, 13, 9, 31, 0)) Minute)
+             [ "明天上午8点到9点半"
+             , "明天上午8点到9点30"
+             ]
+  , examples (datetimeInterval ((2013, 2, 12, 15, 0, 0), (2013, 2, 12, 17, 0, 0)) Hour)
+             [ "下午3点到4点"
+             ]
+  , examples (datetimeInterval ((2013, 2, 12, 15, 30, 0), (2013, 2, 12, 18, 1, 0)) Minute)
+             [ "下午3点半到6点"
+             , "下3点30到6点"
+             , "下3点30到下午6点"
+             , "下3点半到下午6点"
+             ]
+  , examples (datetimeInterval ((2013, 2, 12, 15, 0, 0), (2013, 2, 12, 18, 0, 1)) Second)
+             [ "下午3点到下午6点"
+             ]
+  , examples (datetimeInterval ((2013, 2, 12, 8, 0, 0), (2013, 2, 12, 14, 0, 0)) Hour)
+             [ "上午8点到下午1点"
+             ]
+  , examples (datetimeInterval ((2013, 2, 14, 9, 0, 0), (2013, 2, 14, 12, 0, 0)) Hour)
+             [ "周四上午9点到11点"
+             ]
+  , examples (datetimeInterval ((2013, 2, 12, 11, 30, 0), (2013, 2, 12, 13, 31, 0)) Minute)
+             [ "11点半到1点半"
+             , "11点30到1点30"
+             ]
+  , examples (datetimeInterval ((2013, 2, 12, 8, 0, 0), (2013, 2, 12, 19, 0, 0)) Hour)
+             [ "上午8点到下午6点"
+             ]
+  , examples (datetimeInterval ((2013, 2, 13, 13, 0, 0), (2013, 2, 13, 15, 0, 0)) Hour)
+             [ "明天下午1点到2点"
+             , "明天下午一点到两点"
+              , "明天下午1点到两点"
+             ]
+  , examples (datetimeInterval ((2013, 8, 27, 0, 0, 0), (2013, 8, 30, 0, 0, 0)) Day)
+             [ "8月27号到29号"
+             ]
+  , examples (datetimeInterval ((2013, 10, 23, 0, 0, 0), (2013, 10, 27, 0, 0, 0)) Day)
+             [ "10月23号到26号"
+             ]
+  , examples (datetimeInterval ((2013, 9, 1, 0, 0, 0), (2013, 9, 9, 0, 0, 0)) Day)
+             [ "9月1号到8号"
+             ]
+  , examples (datetimeInterval ((2013, 9, 12, 0, 0, 0), (2013, 9, 17, 0, 0, 0)) Day)
+             [ "9月12号到16号"
+             ]
+  , examples (datetimeInterval ((2013, 8, 19, 0, 0, 0), (2013, 8, 22, 0, 0, 0)) Day)
+             [ "8月19号到21号"
              ]
   ]

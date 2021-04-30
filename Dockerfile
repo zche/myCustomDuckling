@@ -1,19 +1,4 @@
-FROM haskell:8-buster AS builder
-
-RUN apt-get update -qq && \
-  apt-get install -qq -y libpcre3 libpcre3-dev build-essential --fix-missing --no-install-recommends && \
-  apt-get clean && \
-  rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-RUN mkdir /log
-
-WORKDIR /duckling
-
-ADD . .
-
-ENV LANG=C.UTF-8
-
-RUN stack setup
+FROM haskell_builder AS builder
 
 ADD . .
 
