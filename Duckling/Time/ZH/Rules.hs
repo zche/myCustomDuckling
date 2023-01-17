@@ -344,7 +344,7 @@ ruleThisDayofweek :: Rule
 ruleThisDayofweek = Rule
   { name = "this <day-of-week>"
   , pattern =
-    [ regex "这|這|今(个|個)?"
+    [ regex "这|這|本|今(个|個)?"
     , Predicate isADayOfWeek
     ]
   , prod = \tokens -> case tokens of
@@ -474,7 +474,7 @@ ruleNextCycle :: Rule
 ruleNextCycle = Rule
   { name = "next <cycle>"
   , pattern =
-    [ regex "下(个|個)?"
+    [ regex "下(个|個)"
     , dimension TimeGrain
     ]
   , prod = \tokens -> case tokens of
@@ -753,7 +753,7 @@ ruleNextTime :: Rule
 ruleNextTime = Rule
   { name = "next <time>"
   , pattern =
-    [ regex "明|下(个|個)?"
+    [ regex "明|下(个|個)"
     , Predicate isOkWithThisNext
     ]
   , prod = \tokens -> case tokens of
@@ -781,7 +781,8 @@ ruleNextNCycle :: Rule
 ruleNextNCycle = Rule
   { name = "next n <cycle>"
   , pattern =
-    [ regex "下|后|後"
+    [ regex "后|後"
+    -- , regex "下|后|後"
     , Predicate $ isIntegerBetween 1 9999
     , dimension TimeGrain
     ]
@@ -798,7 +799,8 @@ ruleNCycleNext = Rule
   , pattern =
     [ Predicate $ isIntegerBetween 1 9999
     , dimension TimeGrain
-    , regex "下|(之)?后|(之)?後"
+    -- , regex "下|(之)?后|(之)?後"
+    , regex "(之)?后|(之)?後"
     ]
   , prod = \tokens -> case tokens of
       (token:Token TimeGrain grain:_) -> do
@@ -827,6 +829,24 @@ ruleNextYear = Rule
     [ regex "明年|下年"
     ]
   , prod = \_ -> tt $ cycleNth TG.Year 1
+  }
+
+ruleNextMonth :: Rule
+ruleNextMonth = Rule
+  { name = "next month"
+  , pattern =
+    [ regex "下(个)?月"
+    ]
+  , prod = \_ -> tt $ cycleNth TG.Month 1
+  }
+
+ruleNextWeek :: Rule
+ruleNextWeek = Rule
+  { name = "next week"
+  , pattern =
+    [ regex "下(个)?周"
+    ]
+  , prod = \_ -> tt $ cycleNth TG.Week 1
   }
 
 ruleThisCycle :: Rule
@@ -1039,13 +1059,13 @@ ruleTimezone = Rule
 
 ruleDaysOfWeek :: [Rule]
 ruleDaysOfWeek = mkRuleDaysOfWeek
-  [ ( "Monday", "星期一|周一|礼拜一|禮拜一|週一" )
-  , ( "Tuesday", "星期二|周二|礼拜二|禮拜二|週二" )
-  , ( "Wednesday", "星期三|周三|礼拜三|禮拜三|週三" )
-  , ( "Thursday", "星期四|周四|礼拜四|禮拜四|週四" )
-  , ( "Friday", "星期五|周五|礼拜五|禮拜五|週五" )
-  , ( "Saturday", "星期六|周六|礼拜六|禮拜六|週六" )
-  , ( "Sunday", "星期日|星期天|礼拜天|周日|禮拜天|週日|禮拜日" )
+  [ ( "Monday", "星期一|周一|礼拜一|禮拜一|週一|周1" )
+  , ( "Tuesday", "星期二|周二|礼拜二|禮拜二|週二|周2" )
+  , ( "Wednesday", "星期三|周三|礼拜三|禮拜三|週三|周3" )
+  , ( "Thursday", "星期四|周四|礼拜四|禮拜四|週四|周4" )
+  , ( "Friday", "星期五|周五|礼拜五|禮拜五|週五|周5" )
+  , ( "Saturday", "星期六|周六|礼拜六|禮拜六|週六|周6" )
+  , ( "Sunday", "星期日|星期天|礼拜天|周日|禮拜天|週日|禮拜日|周7" )
   ]
 
 ruleMonths :: [Rule]
@@ -1360,9 +1380,18 @@ ruleCurrentMonth :: Rule
 ruleCurrentMonth = Rule
   { name = "current month"
   , pattern =
-    [ regex "这个月|这月"
+    [ regex "这个月|这月|本月"
     ]
-  , prod = \_ -> tt $ cycleNth TG.Month 1
+  , prod = \_ -> tt $ cycleNth TG.Month 0
+  }
+
+ruleCurrentWeek :: Rule
+ruleCurrentWeek = Rule
+  { name = "current month"
+  , pattern =
+    [ regex "这个周|这周|本周"
+    ]
+  , prod = \_ -> tt $ cycleNth TG.Week 0
   }
 
 rules :: [Rule]
@@ -1449,6 +1478,9 @@ rules =
   , ruleIntervalTODBetween
   , ruleThisMonth
   , ruleCurrentMonth
+  , ruleCurrentWeek
+  , ruleNextMonth
+  , ruleNextWeek
   ]
   ++ ruleDaysOfWeek
   ++ ruleMonths
